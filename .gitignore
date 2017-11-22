@@ -1,4 +1,5 @@
 SFML/
+SFML-build/
 *.exe
 *.zip
 *.rar
