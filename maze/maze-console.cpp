@@ -3,6 +3,8 @@
 #include<cstdlib>
 #include<vector>
 #include<time.h>
+#include<cstdio>
+#include<windows.h>
 using namespace std;
 struct position
 {
@@ -12,14 +14,14 @@ int main()
 {
     int rowmax,conmax;
     cout<<"row:"<<endl;
-    cin>>rowmax;
+    scanf("%d",&rowmax);
     cout<<"Columns:"<<endl;
-    cin>>conmax;
+    scanf("%d",&conmax);
     int maze[rowmax][conmax][5];
     for(int i=0;i<rowmax;i++)
     for(int j=0;j<conmax;j++)
-    for(int k=0;k<5;k++)maze[i][j][k]=0;//ÈáçÁΩÆËø∑ÂÆ´
-    //ÁîüÊàêËø∑ÂÆ´ÔºåprimÈöèÊú∫ÁÆóÊ≥ï
+    for(int k=0;k<5;k++)maze[i][j][k]=0;//÷ÿ÷√√‘π¨
+    //…˙≥…√‘π¨£¨primÀÊª˙À„∑®
     vector<position> history;
     vector <int> check;
     position temp;
@@ -36,7 +38,7 @@ int main()
         maze[r][c][0]=1;
         history.erase(history.begin()+p);
         check.clear();
-        if(c>0)//Â∑¶
+        if(c>0)//◊Û
         {
             if(maze[r][c-1][0]==1)check.push_back(1);
             else if(maze[r][c-1][0]==0)
@@ -46,8 +48,7 @@ int main()
                 maze[r][c-1][0]=2;
             }
         }
-        
-        if(r>0)//‰∏ä
+        if(r>0)//…œ
         {
             if(maze[r-1][c][0]==1)check.push_back(2);
             else if(maze[r-1][c][0]==0)
@@ -58,7 +59,7 @@ int main()
             }
         }
         
-        if(c < conmax-1)//Âè≥
+        if(c < conmax-1)//”“
         {
             if(maze[r][c+1][0]==1)check.push_back(3);
             else if(maze[r][c+1][0]==0)
@@ -69,7 +70,7 @@ int main()
             }
         }
         
-        if(r < rowmax-1)//‰∏ã
+        if(r < rowmax-1)//œ¬
         {
             if(maze[r+1][c][0]==1)check.push_back(4);
             else if(maze[r+1][c][0]==0)
@@ -80,10 +81,9 @@ int main()
             }
         }
         
-        //ÈÄâÊã©‰ΩçÁΩÆÊåñÂ¢ô
+        //—°‘ÒŒª÷√Õ⁄«Ω
         if(!check.empty())
         {
-            srand(clock());
             int dir=check.at(rand()%check.size());
             switch(dir)
             {
@@ -96,11 +96,79 @@ int main()
     }
     maze[0][0][1]=1;
     maze[rowmax-1][conmax-1][3]=1;
-    //ÁªòÂà∂Âú∞ÂõæÔºåÂÖàÂà§Êñ≠Âà§Êñ≠ËØ•ÁÇπ
-    
+    //ªÊ÷∆µÿÕº£¨œ»≈–∂œ≈–∂œ∏√µ„
+    /*
     for(int i=0;i<rowmax;i++)
     {
-        for(int j=0;j<conmax;j++)cout<<maze[i][j][0];
+        for(int k=0;k<2;k++)
+        {
+            for(int j=0;j<conmax;j++)
+            {
+                if(!k)
+                {
+                    for(int l=0;l<3;l++)
+                    {
+                        if(l==1 && maze[i][j][2]==1 )cout<<" ";
+                        else cout<<"°ˆ";
+                    }
+                }
+                else
+                {
+                    for(int l=1;l>=0;l--)
+                    {
+                        if(maze[i][j][l]!=0)cout<<" ";
+                        else if(maze[i][j][l]==0)cout<<"°ˆ";
+                    }
+                    if(j==conmax-1 && k==1)
+                    switch(maze[i][j][3])
+                    {
+                        case 0:cout<<"°ˆ";
+                        case 1:cout<<" ";
+                    }
+                }
+            }
+            cout<<endl;
+        }
+    }
+    for(int j=0;j<conmax;j++)
+    for(int l=0;l<3;l++)
+    {
+        if(l==1 && maze[rowmax-1][j][4]==1 )cout<<" ";
+        else cout<<"°ˆ";
+    }
+    Sleep(30000);
+    */
+    for(int i=0;i<rowmax;i++)
+    for(int k=0;k<3;k++)
+    {
+        for(int j=0;j<conmax;j++)
+        {
+            switch(k)
+            {
+                case 0:
+                for(int l=0;l<3;l++)
+                {
+                    if(l==1)maze[i][j][2]==1?cout<<" ":cout<<"°ˆ";
+                    else cout<<"°ˆ";
+                }break;
+                case 1:
+                for(int l=1;l<=3;l++)
+                {
+                    switch(l)
+                    {
+                        case 1:maze[i][j][1]==1?cout<<" ":cout<<"°ˆ";
+                        case 2:maze[i][j][0]==1?cout<<" ":cout<<"°ˆ";
+                        case 3:maze[i][j][3]==1?cout<<" " : cout<<"°ˆ";
+                    }
+                }break;
+                case 2:
+                for(int l=0;l<3;l++)
+                {
+                    if(l==1)maze[i][j][4]==1?cout<<" ":cout<<"°ˆ";
+                    else cout<<"°ˆ";
+                }break;
+            }
+        }
         cout<<endl;
     }
 }
