@@ -43,8 +43,9 @@ int main()
             if(maze[r][c-1][0]==1)check.push_back(1);
             else if(maze[r][c-1][0]==0)
             {
-                temp.c-=1;
+                temp.c--;
                 history.push_back(temp);
+                temp.c++;
                 maze[r][c-1][0]=2;
             }
         }
@@ -53,8 +54,9 @@ int main()
             if(maze[r-1][c][0]==1)check.push_back(2);
             else if(maze[r-1][c][0]==0)
             {
-                temp.r-=1;
+                temp.r--;
                 history.push_back(temp);
+                temp.r++;
                 maze[r-1][c][0]=2;
             }
         }
@@ -64,8 +66,9 @@ int main()
             if(maze[r][c+1][0]==1)check.push_back(3);
             else if(maze[r][c+1][0]==0)
             {
-                temp.c+=1;
+                temp.c++;
                 history.push_back(temp);
+                temp.c--;
                 maze[r][c+1][0]=2;
             }
         }
@@ -75,8 +78,9 @@ int main()
             if(maze[r+1][c][0]==1)check.push_back(4);
             else if(maze[r+1][c][0]==0)
             {
-                temp.r+=1;
+                temp.r++;
                 history.push_back(temp);
+                temp.r--;
                 maze[r+1][c][0]=2;
             }
         }
@@ -96,48 +100,9 @@ int main()
     }
     maze[0][0][1]=1;
     maze[rowmax-1][conmax-1][3]=1;
-    //绘制地图，先判断判断该点
-    /*
-    for(int i=0;i<rowmax;i++)
-    {
-        for(int k=0;k<2;k++)
-        {
-            for(int j=0;j<conmax;j++)
-            {
-                if(!k)
-                {
-                    for(int l=0;l<3;l++)
-                    {
-                        if(l==1 && maze[i][j][2]==1 )cout<<" ";
-                        else cout<<"■";
-                    }
-                }
-                else
-                {
-                    for(int l=1;l>=0;l--)
-                    {
-                        if(maze[i][j][l]!=0)cout<<" ";
-                        else if(maze[i][j][l]==0)cout<<"■";
-                    }
-                    if(j==conmax-1 && k==1)
-                    switch(maze[i][j][3])
-                    {
-                        case 0:cout<<"■";
-                        case 1:cout<<" ";
-                    }
-                }
-            }
-            cout<<endl;
-        }
-    }
-    for(int j=0;j<conmax;j++)
-    for(int l=0;l<3;l++)
-    {
-        if(l==1 && maze[rowmax-1][j][4]==1 )cout<<" ";
-        else cout<<"■";
-    }
-    Sleep(30000);
-    */
+    //寻路
+    
+    //绘制迷宫
     for(int i=0;i<rowmax;i++)
     for(int k=0;k<3;k++)
     {
@@ -148,27 +113,28 @@ int main()
                 case 0:
                 for(int l=0;l<3;l++)
                 {
-                    if(l==1)maze[i][j][2]==1?cout<<" ":cout<<"■";
-                    else cout<<"■";
+                    if(l==1)maze[i][j][2]==1?cout<<' ':cout<<"#";
+                    else cout<<"#";
                 }break;
                 case 1:
                 for(int l=1;l<=3;l++)
                 {
                     switch(l)
                     {
-                        case 1:maze[i][j][1]==1?cout<<" ":cout<<"■";
-                        case 2:maze[i][j][0]==1?cout<<" ":cout<<"■";
-                        case 3:maze[i][j][3]==1?cout<<" " : cout<<"■";
+                        case 1:maze[i][j][1]==1?cout<<' ':cout<<"#";break;
+                        case 2:maze[i][j][0]==1?cout<<' ':cout<<"#";break;
+                        case 3:maze[i][j][3]==1?cout<<' ' : cout<<"#";break;
                     }
                 }break;
                 case 2:
                 for(int l=0;l<3;l++)
                 {
-                    if(l==1)maze[i][j][4]==1?cout<<" ":cout<<"■";
-                    else cout<<"■";
+                    if(l==1)maze[i][j][4]==1?cout<<' ':cout<<"#";
+                    else cout<<"#";
                 }break;
             }
         }
         cout<<endl;
     }
+
 }
