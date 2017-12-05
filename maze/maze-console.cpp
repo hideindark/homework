@@ -9,7 +9,9 @@ using namespace std;
 struct position
 {
     int r,c;
+    position f;
 };
+bool check(vector<position> openlist,vector<position> closelist,position temp);
 int main()
 {
     int rowmax,conmax;
@@ -101,7 +103,92 @@ int main()
     maze[0][0][1]=1;
     maze[rowmax-1][conmax-1][3]=1;
     //寻路
-    
+    temp.r=temp.c=0;
+    vector<position> openlist,closelist;
+    openlist.push_back(temp);
+    while(!openlist.empty())//DFS
+    {
+        int r=openlist.begin().r;
+        int c=openlist.begin().c;
+        if(r>0)
+        {
+            if(maze[r][c][1]==1)
+            {
+                
+                temp.f=temp;
+                temp.r--;
+                if(check(openlist,closelist,temp))openlsit.push_back(temp);
+                temp.r++;
+            }
+        }
+        if(c>0)
+        {
+            if(maze[r][c][3]==1)
+            {
+                temp.f=temp;
+                temp.c--;
+                if(check(openlist,closelist,temp))openlsit.push_back(temp);
+                temp.c++;
+            }
+        }
+        if(r<rowmax-1)
+        {
+            if(maze[r][c][4]==1)
+            {
+                temp.f=temp;
+                temp.r++;
+                if(check(openlist,closelist,temp))openlsit.push_back(temp);
+                temp.r--;
+            }
+        }
+        if(c<cowmax-1)
+        {
+            if(maze[r][c][3]==1)
+            {
+                temp.f=temp;
+                temp.c++;
+                if(check(openlist,closelist,temp))openlsit.push_back(temp);
+                temp.c--;
+            }
+        }
+        closelist.push_back(temp);
+        openlist.erase(openlist.begin());
+    }
+    //创建通路
+    Iterator i;
+    temp.r=rowmax-1;
+    temp.c=conmax-1;
+    for(i=closelist.begin();i!=closelist.end();i++)
+    {
+        if(i.r==temp.r && i.r==temp.r)
+        {
+            int r=temp.r-i.r;
+            int c=temp.c-i.c;
+            if(r==1)
+            {
+                maze[temp.r][temp.c][2]=maze[temp.r][temp.c][0]=3;
+                maze[i.r][i.c][4]=maze[i.r][i.c][0]=3;
+            }
+            else if(r=-1)
+            {
+                maze[temp.r][temp.c][4]=maze[temp.r][temp.c][0]=3;
+                maze[i.r][i.c][2]=maze[i.r][i.c][0]=3;
+            }
+            if(c==1)
+            {
+                maze[temp.r][temp.c][1]=maze[temp.r][temp.c][0]=3;
+                maze[i.r][i.c][3]=maze[i.r][i.c][0]=3;
+            }
+            else if(c==-1)
+            {
+                maze[temp.r][temp.c][3]=maze[temp.r][temp.c][0]=3;
+                maze[i.r][i.c][1]=maze[i.r][i.c][0]=3;
+            }
+            temp.r=i.f.r;
+            temp.c=i.f.c;
+            i=closelist.begin();
+        }
+    }
     //绘制迷宫
     for(int i=0;i<rowmax;i++)
     for(int k=0;k<3;k++)
@@ -137,4 +224,12 @@ int main()
         cout<<endl;
     }
 
+}
+bool check(vector<position> openlist,vector<position> closelist,position temp)
+{
+    Iterator i;
+    if(!openlist.empty())for(i=openlist.begin();i!=openlist.end();i++)if(i.r==temp.r && i.c==temp.c)return false;
+    if(!closelist.empty())for(i=closelist.begin();i!=closelist.end();i++)if(i.r==temp.r && i.c==temp.c)return false;
+    return true;
+    
 }
