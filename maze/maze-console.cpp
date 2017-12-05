@@ -9,9 +9,12 @@ using namespace std;
 struct position
 {
     int r,c;
+};
+struct point : public position
+{
     position f;
 };
-bool check(vector<position> openlist,vector<position> closelist,position temp);
+bool check(vector<point> openlist,vector<point> closelist,point temp);
 int main()
 {
     int rowmax,conmax;
@@ -24,9 +27,9 @@ int main()
     for(int j=0;j<conmax;j++)
     for(int k=0;k<5;k++)maze[i][j][k]=0;//重置迷宫
     //生成迷宫，prim随机算法
-    vector<position> history;
+    vector<point> history;
     vector <int> check;
-    position temp;
+    point temp;
     temp.r=0;
     temp.c=0;
     history.push_back(temp);
@@ -104,12 +107,14 @@ int main()
     maze[rowmax-1][conmax-1][3]=1;
     //寻路
     temp.r=temp.c=0;
-    vector<position> openlist,closelist;
+    vector<point> openlist,closelist;
     openlist.push_back(temp);
+    point t;
     while(!openlist.empty())//DFS
     {
-        int r=openlist.begin().r;
-        int c=openlist.begin().c;
+        t=openlist.at(0);
+        int r=t.r;
+        int c=t.c;
         if(r>0)
         {
             if(maze[r][c][1]==1)
@@ -117,7 +122,7 @@ int main()
                 
                 temp.f=temp;
                 temp.r--;
-                if(check(openlist,closelist,temp))openlsit.push_back(temp);
+                if(check(openlist,closelist,temp))openlist.push_back(temp);
                 temp.r++;
             }
         }
@@ -127,7 +132,7 @@ int main()
             {
                 temp.f=temp;
                 temp.c--;
-                if(check(openlist,closelist,temp))openlsit.push_back(temp);
+                if(check(openlist,closelist,temp))openlist.push_back(temp);
                 temp.c++;
             }
         }
@@ -137,17 +142,17 @@ int main()
             {
                 temp.f=temp;
                 temp.r++;
-                if(check(openlist,closelist,temp))openlsit.push_back(temp);
+                if(check(openlist,closelist,temp))openlist.push_back(temp);
                 temp.r--;
             }
         }
-        if(c<cowmax-1)
+        if(c<conmax-1)
         {
             if(maze[r][c][3]==1)
             {
                 temp.f=temp;
                 temp.c++;
-                if(check(openlist,closelist,temp))openlsit.push_back(temp);
+                if(check(openlist,closelist,temp))openlist.push_back(temp);
                 temp.c--;
             }
         }
@@ -155,38 +160,39 @@ int main()
         openlist.erase(openlist.begin());
     }
     //创建通路
-    Iterator i;
     temp.r=rowmax-1;
     temp.c=conmax-1;
-    for(i=closelist.begin();i!=closelist.end();i++)
+    for(int i=0;i<closelist.size();i++)
     {
-        if(i.r==temp.r && i.r==temp.r)
+        t=closelist[i];
+        if(t.r==temp.r && t.r==temp.r)
         {
-            int r=temp.r-i.r;
-            int c=temp.c-i.c;
+            int r=temp.r-t.r;
+            int c=temp.c-t.c;
             if(r==1)
             {
                 maze[temp.r][temp.c][2]=maze[temp.r][temp.c][0]=3;
-                maze[i.r][i.c][4]=maze[i.r][i.c][0]=3;
+                maze[t.r][t.c][4]=maze[t.r][t.c][0]=3;
             }
             else if(r=-1)
             {
                 maze[temp.r][temp.c][4]=maze[temp.r][temp.c][0]=3;
-                maze[i.r][i.c][2]=maze[i.r][i.c][0]=3;
+                maze[t.r][t.c][2]=maze[t.r][t.c][0]=3;
             }
             if(c==1)
             {
                 maze[temp.r][temp.c][1]=maze[temp.r][temp.c][0]=3;
-                maze[i.r][i.c][3]=maze[i.r][i.c][0]=3;
+                maze[t.r][t.c][3]=maze[t.r][t.c][0]=3;
             }
             else if(c==-1)
             {
                 maze[temp.r][temp.c][3]=maze[temp.r][temp.c][0]=3;
-                maze[i.r][i.c][1]=maze[i.r][i.c][0]=3;
+                maze[t.r][t.c][1]=maze[t.r][t.c][0]=3;
             }
-            temp.r=i.f.r;
-            temp.c=i.f.c;
-            i=closelist.begin();
+            temp.r=t.f.r;
+            temp.c=t.f.c;
+            i=0;
+            if(t.f.r==0 && t.f.c==0)break;
         }
     }
     //绘制迷宫
@@ -225,11 +231,10 @@ int main()
     }
 
 }
-bool check(vector<position> openlist,vector<position> closelist,position temp)
+bool check(vector<position> openlist,vector<position> closelist,point temp)
 {
-    Iterator i;
-    if(!openlist.empty())for(i=openlist.begin();i!=openlist.end();i++)if(i.r==temp.r && i.c==temp.c)return false;
-    if(!closelist.empty())for(i=closelist.begin();i!=closelist.end();i++)if(i.r==temp.r && i.c==temp.c)return false;
+    if(!openlist.empty())for(int i=0;i<openlist.size();i++)if(openlist[i].r==temp.r && openlist[i].c==temp.c)return false;
+    if(!closelist.empty())for(int i=0;i<closelist.size();i++)if(closelist[i].r==temp.r && closelist[i].c==temp.c)return false;
     return true;
     
 }
