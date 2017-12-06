@@ -107,70 +107,68 @@ int main()
     maze[0][0][1]=1;
     maze[rowmax-1][conmax-1][3]=1;
     //寻路
-    temp.r=temp.c=0;
+    temp.r=temp.c=temp.f.r=temp.f.c=0;
     vector<point> openlist,closelist;
     openlist.push_back(temp);
     point t;
     while(!openlist.empty())//BFS
     {
-        cout<<openlist.size()<<" "<<closelist.size()<<"||";
         t=openlist.at(0);
         int r=t.r;
         int c=t.c;
-        t.f.r=t.r;
-        t.f.c=t.c;
+        temp.r=temp.f.r=t.r;
+        temp.c=temp.f.c=t.c;
         if(r>0)//向上
         {
             if(maze[r][c][2]==1)
             {
                 
-                t.r--;
-                if(check_move(openlist,closelist,t))
+                temp.r--;
+                if(check_move(openlist,closelist,temp))
                 {
-                    openlist.push_back(t);
+                    openlist.push_back(temp);
                 }
-                t.r++;
+                temp.r++;
             }
         }
         if(c>0)//向左
         {
             if(maze[r][c][1]==1)
             {
-                t.c--;
-                if(check_move(openlist,closelist,t))
+                temp.c--;
+                if(check_move(openlist,closelist,temp))
                 {
-                    openlist.push_back(t);
+                    openlist.push_back(temp);
                 }
-                t.c++;
+                temp.c++;
             }
         }
         if(r<rowmax-1)//向下
         {
             if(maze[r][c][4]==1)
             {
-                t.r++;
-                if(check_move(openlist,closelist,t))
+                temp.r++;
+                if(check_move(openlist,closelist,temp))
                 {
-                    openlist.push_back(t);
+                    openlist.push_back(temp);
                 }
-                t.r--;
+                temp.r--;
             }
         }
         if(c<conmax-1)//向右
         {
             if(maze[r][c][3]==1)
             {
-                t.c++;
-                if(check_move(openlist,closelist,t))
+                temp.c++;
+                if(check_move(openlist,closelist,temp))
                 {
-                    openlist.push_back(t);
+                    openlist.push_back(temp);
                 }
-                t.c--;
+                temp.c--;
             }
         }
         closelist.push_back(t);
-        openlist.erase(openlist.begin());  
-        cout<<openlist.size()<<" "<<closelist.size()<<endl;
+        openlist.erase(openlist.begin());
     }
     //创建通路
     temp.r=rowmax-1;
@@ -178,10 +176,10 @@ int main()
     for(int i=0;i<closelist.size();i++)
     {
         t=closelist.at(i);
-        if(t.r==temp.r && t.r==temp.r)
+        if(t.r==temp.r && t.c==temp.c)
         {
-            int r=temp.r-t.r;
-            int c=temp.c-t.c;
+            int r=temp.r-t.f.r;
+            int c=temp.c-t.f.c;
             if(r==1)
             {
                 maze[temp.r][temp.c][2]=maze[temp.r][temp.c][0]=3;
