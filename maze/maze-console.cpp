@@ -28,6 +28,16 @@ int main()
     for(int j=0;j<conmax;j++)
     for(int k=0;k<5;k++)maze[i][j][k]=0;//重置迷宫
     //生成迷宫，prim随机算法
+    /*
+    prim随机算法原理：
+    1.让迷宫全是墙.  
+    2.选一个单元格作为迷宫的通路，然后把它的邻墙放入列表  
+    3.当列表里还有墙时  
+    1.从列表里随机选一个墙，如果这面墙分隔的两个单元格只有一个单元格被访问过  
+        1.那就从列表里移除这面墙，即把墙打通，让未访问的单元格成为迷宫的通路  
+        2.把这个格子的墙加入列表  
+        2.如果墙两面的单元格都已经被访问过，那就从列表里移除这面墙  
+    */
     vector<point> history;
     vector <int> check;
     point temp;
@@ -108,10 +118,10 @@ int main()
     maze[rowmax-1][conmax-1][3]=1;
     //寻路
     temp.r=temp.c=temp.f.r=temp.f.c=0;
-    vector<point> openlist,closelist;
+    vector<point> openlist,closelist;//openlist用于存储等待移动的点，closelist存储已经走过的点最后用于寻找路线
     openlist.push_back(temp);
     point t;
-    while(!openlist.empty())//BFS
+    while(!openlist.empty())//BFS，走过每一个点
     {
         t=openlist.at(0);
         int r=t.r;
@@ -170,7 +180,7 @@ int main()
         closelist.push_back(t);
         openlist.erase(openlist.begin());
     }
-    //创建通路
+    //创建通路，通过从终点逐渐回溯到起点
     temp.r=rowmax-1;
     temp.c=conmax-1;
     for(int i=0;i<closelist.size();i++)
@@ -206,7 +216,7 @@ int main()
             i=0;
         }
     }
-    //绘制迷宫
+    //绘制迷宫与路线
     for(int i=0;i<rowmax;i++)
     for(int k=0;k<3;k++)
     {
@@ -242,7 +252,7 @@ int main()
     }
 
 }
-bool check_move(vector<point> openlist,vector<point> closelist,point temp)
+bool check_move(vector<point> openlist,vector<point> closelist,point temp)//用于在BFS处判断该点是否已经被判断了
 {
     if(!openlist.empty())
     {
