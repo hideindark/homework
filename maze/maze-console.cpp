@@ -10,11 +10,12 @@ struct position
 {
     int r,c;
 };
-struct point : public position
+struct point
 {
+    int r,c;
     position f;
 };
-bool check(vector<point> openlist,vector<point> closelist,point temp);
+bool check_move(vector<point> openlist,vector<point> closelist,point temp);
 int main()
 {
     int rowmax,conmax;
@@ -25,8 +26,8 @@ int main()
     int maze[rowmax][conmax][5];
     for(int i=0;i<rowmax;i++)
     for(int j=0;j<conmax;j++)
-    for(int k=0;k<5;k++)maze[i][j][k]=0;//ÖØÖÃÃÔ¹¬
-    //Éú³ÉÃÔ¹¬£¬primËæ»úËã·¨
+    for(int k=0;k<5;k++)maze[i][j][k]=0;//é‡ç½®è¿·å®«
+    //ç”Ÿæˆè¿·å®«ï¼Œpriméšæœºç®—æ³•
     vector<point> history;
     vector <int> check;
     point temp;
@@ -43,7 +44,7 @@ int main()
         maze[r][c][0]=1;
         history.erase(history.begin()+p);
         check.clear();
-        if(c>0)//×ó
+        if(c>0)//å·¦
         {
             if(maze[r][c-1][0]==1)check.push_back(1);
             else if(maze[r][c-1][0]==0)
@@ -54,7 +55,7 @@ int main()
                 maze[r][c-1][0]=2;
             }
         }
-        if(r>0)//ÉÏ
+        if(r>0)//ä¸Š
         {
             if(maze[r-1][c][0]==1)check.push_back(2);
             else if(maze[r-1][c][0]==0)
@@ -66,7 +67,7 @@ int main()
             }
         }
         
-        if(c < conmax-1)//ÓÒ
+        if(c < conmax-1)//å³
         {
             if(maze[r][c+1][0]==1)check.push_back(3);
             else if(maze[r][c+1][0]==0)
@@ -78,7 +79,7 @@ int main()
             }
         }
         
-        if(r < rowmax-1)//ÏÂ
+        if(r < rowmax-1)//ä¸‹
         {
             if(maze[r+1][c][0]==1)check.push_back(4);
             else if(maze[r+1][c][0]==0)
@@ -90,7 +91,7 @@ int main()
             }
         }
         
-        //Ñ¡ÔñÎ»ÖÃÍÚÇ½
+        //é€‰æ‹©ä½ç½®æŒ–å¢™
         if(!check.empty())
         {
             int dir=check.at(rand()%check.size());
@@ -105,66 +106,78 @@ int main()
     }
     maze[0][0][1]=1;
     maze[rowmax-1][conmax-1][3]=1;
-    //Ñ°Â·
+    //å¯»è·¯
     temp.r=temp.c=0;
     vector<point> openlist,closelist;
     openlist.push_back(temp);
     point t;
-    while(!openlist.empty())//DFS
+    while(!openlist.empty())//BFS
     {
+        cout<<openlist.size()<<" "<<closelist.size()<<"||";
         t=openlist.at(0);
         int r=t.r;
         int c=t.c;
-        if(r>0)
+        t.f.r=t.r;
+        t.f.c=t.c;
+        if(r>0)//å‘ä¸Š
+        {
+            if(maze[r][c][2]==1)
+            {
+                
+                t.r--;
+                if(check_move(openlist,closelist,t))
+                {
+                    openlist.push_back(t);
+                }
+                t.r++;
+            }
+        }
+        if(c>0)//å‘å·¦
         {
             if(maze[r][c][1]==1)
             {
-                
-                temp.f=temp;
-                temp.r--;
-                if(check(openlist,closelist,temp))openlist.push_back(temp);
-                temp.r++;
+                t.c--;
+                if(check_move(openlist,closelist,t))
+                {
+                    openlist.push_back(t);
+                }
+                t.c++;
             }
         }
-        if(c>0)
-        {
-            if(maze[r][c][3]==1)
-            {
-                temp.f=temp;
-                temp.c--;
-                if(check(openlist,closelist,temp))openlist.push_back(temp);
-                temp.c++;
-            }
-        }
-        if(r<rowmax-1)
+        if(r<rowmax-1)//å‘ä¸‹
         {
             if(maze[r][c][4]==1)
             {
-                temp.f=temp;
-                temp.r++;
-                if(check(openlist,closelist,temp))openlist.push_back(temp);
-                temp.r--;
+                t.r++;
+                if(check_move(openlist,closelist,t))
+                {
+                    openlist.push_back(t);
+                }
+                t.r--;
             }
         }
-        if(c<conmax-1)
+        if(c<conmax-1)//å‘å³
         {
             if(maze[r][c][3]==1)
             {
-                temp.f=temp;
-                temp.c++;
-                if(check(openlist,closelist,temp))openlist.push_back(temp);
-                temp.c--;
+                t.c++;
+                if(check_move(openlist,closelist,t))
+                {
+                    openlist.push_back(t);
+                }
+                t.c--;
             }
         }
-        closelist.push_back(temp);
-        openlist.erase(openlist.begin());
+        closelist.push_back(t);
+        openlist.erase(openlist.begin());  
+        cout<<openlist.size()<<" "<<closelist.size()<<endl;
     }
-    //´´½¨Í¨Â·
+    //åˆ›å»ºé€šè·¯
     temp.r=rowmax-1;
     temp.c=conmax-1;
     for(int i=0;i<closelist.size();i++)
     {
-        t=closelist[i];
+        t=closelist.at(i);
         if(t.r==temp.r && t.r==temp.r)
         {
             int r=temp.r-t.r;
@@ -172,30 +185,30 @@ int main()
             if(r==1)
             {
                 maze[temp.r][temp.c][2]=maze[temp.r][temp.c][0]=3;
-                maze[t.r][t.c][4]=maze[t.r][t.c][0]=3;
+                maze[t.f.r][t.f.c][4]=maze[t.f.r][t.f.c][0]=3;
             }
             else if(r=-1)
             {
                 maze[temp.r][temp.c][4]=maze[temp.r][temp.c][0]=3;
-                maze[t.r][t.c][2]=maze[t.r][t.c][0]=3;
+                maze[t.f.r][t.f.c][2]=maze[t.f.r][t.f.c][0]=3;
             }
             if(c==1)
             {
                 maze[temp.r][temp.c][1]=maze[temp.r][temp.c][0]=3;
-                maze[t.r][t.c][3]=maze[t.r][t.c][0]=3;
+                maze[t.f.r][t.f.c][3]=maze[t.f.r][t.f.c][0]=3;
             }
             else if(c==-1)
             {
                 maze[temp.r][temp.c][3]=maze[temp.r][temp.c][0]=3;
-                maze[t.r][t.c][1]=maze[t.r][t.c][0]=3;
+                maze[t.f.r][t.f.c][1]=maze[t.f.r][t.f.c][0]=3;
             }
+            if(t.f.r==0 && t.f.c==0)break;
             temp.r=t.f.r;
             temp.c=t.f.c;
             i=0;
-            if(t.f.r==0 && t.f.c==0)break;
         }
     }
-    //»æÖÆÃÔ¹¬
+    //ç»˜åˆ¶è¿·å®«
     for(int i=0;i<rowmax;i++)
     for(int k=0;k<3;k++)
     {
@@ -206,7 +219,7 @@ int main()
                 case 0:
                 for(int l=0;l<3;l++)
                 {
-                    if(l==1)maze[i][j][2]==1?cout<<' ':cout<<"#";
+                    if(l==1)maze[i][j][2]==1?cout<<' ':(maze[i][j][2]==3?cout<<"0":cout<<"#");
                     else cout<<"#";
                 }break;
                 case 1:
@@ -214,15 +227,15 @@ int main()
                 {
                     switch(l)
                     {
-                        case 1:maze[i][j][1]==1?cout<<' ':cout<<"#";break;
-                        case 2:maze[i][j][0]==1?cout<<' ':cout<<"#";break;
-                        case 3:maze[i][j][3]==1?cout<<' ' : cout<<"#";break;
+                        case 1:maze[i][j][1]==1?cout<<' ':(maze[i][j][1]==3?cout<<"0":cout<<"#");break;
+                        case 2:maze[i][j][0]==1?cout<<' ':(maze[i][j][0]==3?cout<<"0":cout<<"#");break;
+                        case 3:maze[i][j][3]==1?cout<<' ' :(maze[i][j][3]==3?cout<<"0":cout<<"#");break;
                     }
                 }break;
                 case 2:
                 for(int l=0;l<3;l++)
                 {
-                    if(l==1)maze[i][j][4]==1?cout<<' ':cout<<"#";
+                    if(l==1)maze[i][j][4]==1?cout<<' ':(maze[i][j][4]==3?cout<<"0":cout<<"#");
                     else cout<<"#";
                 }break;
             }
@@ -231,10 +244,22 @@ int main()
     }
 
 }
-bool check(vector<position> openlist,vector<position> closelist,point temp)
+bool check_move(vector<point> openlist,vector<point> closelist,point temp)
 {
-    if(!openlist.empty())for(int i=0;i<openlist.size();i++)if(openlist[i].r==temp.r && openlist[i].c==temp.c)return false;
-    if(!closelist.empty())for(int i=0;i<closelist.size();i++)if(closelist[i].r==temp.r && closelist[i].c==temp.c)return false;
+    if(!openlist.empty())
+    {
+        for(int i=0;i<openlist.size();i++)
+        {
+            if(openlist.at(i).r==temp.r && openlist.at(i).c==temp.c)return false;
+        }
+    }
+    if(!closelist.empty())
+    {
+        for(int i=0;i<closelist.size();i++)
+        {
+            if(closelist.at(i).r==temp.r && closelist.at(i).c==temp.c)return false;
+        }
+    }
     return true;
     
 }
