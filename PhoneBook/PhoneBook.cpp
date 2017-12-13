@@ -133,21 +133,31 @@ void Insert(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
 }
 int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num,int mode)
 {
-    puts("How do you want to search");
-    puts("1.Phone number");
-    puts("2.name");
     unsigned char ch[80];
     int mode,t=0,blank=0,p;
-    if(cin>>mode)
-    {
-        if(mode!=1 || mode!=2 )puts("Please input a useful number");
-    }
-    else puts("Please input 1 or 2");
     if(mode==1)//以号码查询
     {
 
         cout<<"Please input the Phone number"<<endl;
-        cin>>ch;
+        while(1)
+        {
+            bool error=FALSE;
+            cin.get(ch,80);
+            if(strlen(ch)!=0)
+            {
+                int length=strlen(ch);
+                for(int i=0;i<length;i++)
+                {
+                    if(ch[i]<48||ch[i]>57)
+                    {
+                        puts("Please input a series number, not other things");
+                        error=true;
+                        break;
+                    }
+                }
+                if(error)continue;
+            }
+        }
         for(int i=0;i<strlen(ch);i++)
         {
             blank+=ch[i];
@@ -156,7 +166,11 @@ int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n
         for(;t<*n_num;t++)
         {
             p=rand()%100;
-            if(Phonebook_num[p].crash==false)continue;
+            if(Phonebook_num[p].crash==false)
+            {
+                t--;
+                continue;
+            }
             else if(!strcmp(ch,Phonebook_num[p].Number))
             {
                 cout<<"Name:"<<Phonebook_num[p].Number<<endl<<"Number:"<<Phonebook_num[p].name<<endl;
@@ -167,7 +181,7 @@ int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n
         cout<<"Not Find"<<endl;
         return -1;
     }
-    if(mode==2)
+    if(mode==2)//以姓名查询
     {
         cout<<"Please input the name"<<endl;
         cin>>ch;
@@ -179,7 +193,11 @@ int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n
         for(;t<*n_name;t++)
         {
             p=rand()%100;
-            if(Phonebook_name[p].crash==false)continue;
+            if(Phonebook_name[p].crash==false)
+            {
+                t--;
+                continue;
+            }
             else if(!strcmp(ch,Phonebook_name[p].Number))
             {
                 cout<<"Name:"<<Phonebook_name[p].Number<<endl<<"Number:"<<Phonebook_name[p].name<<endl;
@@ -193,9 +211,66 @@ int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n
 }
 void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num)
 {
+    int s_mode,blank=0,t=0;
+    int p1,p2;
+    unsigned char ch[80];
     cout<<"First search what you want to delete"<<endl;
-    int p_num=Search(Phonebook_name,Phonebook_num,n_name,n_num);
-    if(p==-1)return ;
-    
-
+    cout<<"Chose a search mode"<<endl<<"1.Phone number"<<endl<<"2.name"<<endl;
+    do
+    {
+        cin>>s_mode
+    }
+    while(s_mode<1 && s_mode2>2)
+    p1=Search(Phonebook_name,Phonebook_num,n_name,n_num,s_mode);
+    if(p1==-1)//寻找失败，导致删除失败
+    {
+        cout<<"Delete failed"<<endl;
+        return ;
+    }
+    if(s_mode==1)
+    {
+        strcpy(ch,Phonebook_num[p1].name);
+        for(int i=0;i<strlen(ch);i++)
+        {
+            blank+=ch[i];
+        }
+        srand(blank);
+        for(;t<*n_name;t++)
+        {
+            p2=rand()%100;
+            if(!Phonebook_name[p].crash)
+            {
+                t--;
+                continue;
+            }
+            else if(!strcmp(ch,Phonebook_name[p2].name))break;
+        }
+        Phonebook_name[p2].crash==false;
+        Phonebook_num[p1].crash==false;
+        *n_num--;*n_name--;
+        cout<<"Delete Success"<<endl;
+    }
+    else if(s_mode==2)//以名字搜索后，再以数字搜索其在数字表中的位置
+    {
+        strcpy(ch,Phonebook_name[p1].Number);
+        for(int i=0;i<strlen(ch);i++)
+        {
+            blank+=ch[i];
+        }
+        srand(blank);
+        for(;t<*n_num;t++)
+        {
+            p2=rand()%100;
+            if(!Phonebook_num[p2].crash)
+            {
+                t--;
+                continue;
+            }
+            else if(!strcmp(ch,Phonebook_num[p2].Number))break;
+        }
+        Phonebook_name[p1].crash==false;
+        Phonebook_num[p2].crash==false;
+        *n_num--;*n_name--;
+        cout<<"Delete Success"<<endl;
+    }
 }
