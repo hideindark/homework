@@ -274,3 +274,149 @@ void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
         cout<<"Delete Success"<<endl;
     }
 }
+void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num)
+{
+    int s_mode,blank=0,t=0;
+    int mode;
+    int p1,p2;
+    unsigned char ch[80];
+    cout<<"First search what you want to Change"<<endl;
+    cout<<"Chose a search mode"<<endl<<"1.Phone number"<<endl<<"2.name"<<endl;
+    do
+    {
+        cin>>s_mode
+    }
+    while(s_mode<1 && s_mode2>2)
+    p1=Search(Phonebook_name,Phonebook_num,n_name,n_num,s_mode);
+    if(p1==-1)//寻找失败，导致无法继续进行更改
+    {
+        cout<<"Change failed"<<endl;
+        return ;
+    }
+    Phone New;
+    if(s_mode==1)//以号码搜索后，再以名字搜索其在姓名表的位置
+    {
+        strcpy(ch,Phonebook_num[p1].name);
+        for(int i=0;i<strlen(ch);i++)
+        {
+            blank+=ch[i];
+        }
+        srand(blank);
+        for(;t<*n_name;t++)
+        {
+            p2=rand()%100;
+            if(!Phonebook_name[p].crash)
+            {
+                t--;
+                continue;
+            }
+            else if(!strcmp(ch,Phonebook_name[p2].name))break;
+        }
+        strcpy(New.name,Phonebook_num[p1].name);
+        strcpy(New.Number,Phonebook_num[p1].Number);
+        cout<<"What's you want to change"<<endl<<"1.Phone Number"<<endl<<"2.name"<<endl<<"3.Phongnumber and name"<<endl;
+        do
+        {
+            cin>>mode
+        }
+        while(mode<1 && mode2>3)
+        switch(mode)
+        {
+            case 3:
+            case 2:
+                cout<<"Please input new name"<<endl;
+                unsigned char ch[80];
+                cin>>ch;
+                strcpy(New.name,ch);
+                if(mode==2)break;
+            case 1:
+                cout<<"Please input new Phong number"<<endl;
+                unsigned char ch[80];
+                while(1)
+                {
+                    bool error=FALSE;
+                    cin.get(ch,80);
+                    if(strlen(ch)!=0)
+                    {
+                        int length=strlen(ch);
+                        for(int i=0;i<length;i++)
+                        {
+                            if(ch[i]<48||ch[i]>57)
+                            {
+                                puts("Please input a series number, not other things");
+                                error=true;
+                                break;
+                            }
+                        }
+                        if(error)continue;
+                    }
+                }
+                strcpy(New.Number,ch);break;
+        }
+        Phonebook_name[p2]=New;
+        Phonebook_num[p1]=New;
+    }
+    else if(s_mode==2)//以名字搜索后，再以数字搜索其在数字表中的位置
+    {
+        strcpy(ch,Phonebook_name[p1].Number);
+        for(int i=0;i<strlen(ch);i++)
+        {
+            blank+=ch[i];
+        }
+        srand(blank);
+        for(;t<*n_num;t++)
+        {
+            p2=rand()%100;
+            if(!Phonebook_num[p2].crash)
+            {
+                t--;
+                continue;
+            }
+            else if(!strcmp(ch,Phonebook_num[p2].Number))break;
+        }
+        strcpy(New.name,Phonebook_name[p1].name);
+        strcpy(New.Number,Phonebook_name[p1].Number);
+        cout<<"What's you want to change"<<endl<<"1.Phone Number"<<endl<<"2.name"<<endl<<"3.Phongnumber and name"<<endl;
+        do
+        {
+            cin>>mode
+        }
+        while(mode<1 && mode2>3)
+        switch(mode)
+        {
+            case 3:
+            case 2:
+                cout<<"Please input new name"<<endl;
+                unsigned char ch[80];
+                cin>>ch;
+                strcpy(New.name,ch);
+                if(mode==2)break;
+            case 1:
+                cout<<"Please input new Phong number"<<endl;
+                unsigned char ch[80];
+                while(1)
+                {
+                    bool error=FALSE;
+                    cin.get(ch,80);
+                    if(strlen(ch)!=0)
+                    {
+                        int length=strlen(ch);
+                        for(int i=0;i<length;i++)
+                        {
+                            if(ch[i]<48||ch[i]>57)
+                            {
+                                puts("Please input a series number, not other things");
+                                error=true;
+                                break;
+                            }
+                        }
+                        if(error)continue;
+                    }
+                }
+                strcpy(New.Number,ch);break;
+        }
+        Phonebook_num[p2]=New;
+        Phonebook_name[p1]=New;
+    }
+    
+}
