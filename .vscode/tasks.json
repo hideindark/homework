@@ -10,9 +10,9 @@
             "args": [
                 // Ask msbuild to generate full paths for file names.
                 "-g",
-                "maze\\maze-console.cpp",
+                "PhoneBook\\PhoneBook.cpp",
                 "-o",
-                "maze.exe"
+                "Phonebook.exe"
             ],
             "group": {
                 "kind":"build",
