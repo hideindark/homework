@@ -3,3 +3,5 @@ SFML-build/
 *.exe
 *.zip
 *.rar
+*.out
+hufzip.cpp
