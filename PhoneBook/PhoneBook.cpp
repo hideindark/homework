@@ -1,18 +1,19 @@
 #include<iostream>
 #include<cstdio>
 #include<cstring>
+#include<cstdlib>
 #include<math.h>
 using namespace std;
 struct Phone{
-    unsigned char Number[80];
-    unsigned char name[80];
+    char Number[80];
+    char name[80];
     bool crash;//用于判断是否已存在记录
     Phone()
     {
         crash=false;
     }
-}
-int Start();
+};
+int Start(int *mode);
 void Insert(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);
 void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);
 void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);
@@ -22,8 +23,8 @@ int main()
     Phone Phonebook_name[100],Phonebook_num[100];
     int n_name,n_num;
     n_name=n_num=0;
-    int s_mode;
-    while(int mode=Start()!=6)
+    int s_mode,mode;
+    while(Start(&mode)!=6)
     {
         switch(mode)
         {
@@ -33,16 +34,17 @@ int main()
                 cout<<"Chose a search mode"<<endl<<"1.Phone number"<<endl<<"2.name"<<endl;
                 do
                 {
-                    cin>>s_mode
+                    cin>>s_mode;
+                    getchar();
                 }
-                while(s_mode<1 && s_mode2>2)
+                while(s_mode<1 && s_mode>2);
                 Search(Phonebook_name,Phonebook_num,&n_name,&n_num,s_mode);break;
             case 4:Change(Phonebook_name,Phonebook_num,&n_name,&n_num);break;
         }
     }
     
 }
-int Start()
+int Start(int *mode)
 {
     puts("What You want to do?");
     puts("1.Add a new phone number");
@@ -50,19 +52,18 @@ int Start()
     puts("3.Find a Phone number information");
     puts("4.Change a phone imformation");
     puts("Choose one and input a number");
-    int d;
     while(1)
     {
-        if(scanf("%d",&d)==1)
+        if(scanf("%d",mode)==1)
         {
-            if(d < 1 || d>4 )
+            if(*mode < 1 || *mode>4 )
             {
-                Tryagain: puts("Please input a integer type number");
+                puts("Please input a integer type number");
                 continue;
             }
-            else return d;
+            else return *mode;
         }
-        else goto Tryagain;
+        else continue;
     }
 
 }
@@ -71,16 +72,17 @@ void Insert(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
     if(*n_num==100||*n_name==100)
     {
         cout<<"You Only can have 100 records, if you want record more, please delete some"<<endl;
-        return 0;
+        return ;
     }
-    unsigned char ch[20];
+    char ch[20];
     Phone NewPhone;
     int name,num;
-    Printf("Please input the Phone number:");
+    printf("Please input the Phone number:");
     while(1)
     {
-        bool error=FALSE;
-        cin.get(ch,80);
+        bool error=false;
+        cin>>ch;
+        getchar();
         if(strlen(ch)!=0)
         {
             int length=strlen(ch);
@@ -94,11 +96,13 @@ void Insert(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
                 }
             }
             if(error)continue;
+            else break;
         }
     }
     strcpy(NewPhone.Number,ch);
-    Printf("Please input a name")
+    printf("Please input a name:");
     cin.get(ch,80);
+    getchar();
     strcpy(NewPhone.name,ch);
     NewPhone.crash=true;
     int blank=0;
@@ -107,42 +111,47 @@ void Insert(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
     {
         blank+=ch[i];
     }
+    srand(blank);
     do
     {
-        srand(blank);
         name=rand()%100;
     }
-    while(Phonebook_name[name].crash==true)
-    Phonebook_name[name]=NewPhone;
-    *n_name++;
+    while(Phonebook_name[name].crash==true);
+    strcpy(Phonebook_name[name].name,NewPhone.name);
+    strcpy(Phonebook_name[name].Number,NewPhone.Number);
+    Phonebook_name[name].crash=true;
+    *n_name+=1;;
     //以号码进行哈希插入
     blank=0;
     for(int i=0;i<strlen(NewPhone.Number);i++)
     {
         blank+=ch[i];
     }
+    srand(blank);
     do
     {
-        srand(blank);
         num=rand()%100;
     }
-    while(Phonebook_name[num].crash==true)
-    Phonebook_num[num]=NewPhone;
-    *sn_num++;
+    while(Phonebook_name[num].crash==true);
+    strcpy(Phonebook_num[num].name,NewPhone.name);
+    strcpy(Phonebook_num[num].Number,NewPhone.Number);
+    Phonebook_num[num].crash=true;
+    *n_num+=1;
     
 }
 int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num,int mode)
 {
-    unsigned char ch[80];
-    int mode,t=0,blank=0,p;
+    char ch[80];
+    int t=0,blank=0,p;
     if(mode==1)//以号码查询
     {
 
         cout<<"Please input the Phone number"<<endl;
         while(1)
         {
-            bool error=FALSE;
+            bool error=false;
             cin.get(ch,80);
+            getchar();
             if(strlen(ch)!=0)
             {
                 int length=strlen(ch);
@@ -156,6 +165,7 @@ int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n
                     }
                 }
                 if(error)continue;
+                else break;
             }
         }
         for(int i=0;i<strlen(ch);i++)
@@ -185,6 +195,7 @@ int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n
     {
         cout<<"Please input the name"<<endl;
         cin>>ch;
+        getchar();
         for(int i=0;i<strlen(ch);i++)
         {
             blank+=ch[i];
@@ -213,14 +224,15 @@ void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
 {
     int s_mode,blank=0,t=0;
     int p1,p2;
-    unsigned char ch[80];
+    char ch[80];
     cout<<"First search what you want to delete"<<endl;
     cout<<"Chose a search mode"<<endl<<"1.Phone number"<<endl<<"2.name"<<endl;
     do
     {
-        cin>>s_mode
+        cin>>s_mode;
+        getchar();
     }
-    while(s_mode<1 && s_mode2>2)
+    while(s_mode<1 && s_mode>2);
     p1=Search(Phonebook_name,Phonebook_num,n_name,n_num,s_mode);
     if(p1==-1)//寻找失败，导致删除失败
     {
@@ -238,7 +250,7 @@ void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
         for(;t<*n_name;t++)
         {
             p2=rand()%100;
-            if(!Phonebook_name[p].crash)
+            if(!Phonebook_name[p2].crash)
             {
                 t--;
                 continue;
@@ -247,7 +259,7 @@ void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
         }
         Phonebook_name[p2].crash==false;
         Phonebook_num[p1].crash==false;
-        *n_num--;*n_name--;
+        *n_num-=1;*n_name-=1;
         cout<<"Delete Success"<<endl;
     }
     else if(s_mode==2)//以名字搜索后，再以数字搜索其在数字表中的位置
@@ -270,23 +282,24 @@ void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
         }
         Phonebook_name[p1].crash==false;
         Phonebook_num[p2].crash==false;
-        *n_num--;*n_name--;
+        *n_num-=1;*n_name-=1;
         cout<<"Delete Success"<<endl;
     }
 }
 void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num)
 {
-    int s_mode,blank=0,t=0;
+    int s_mode,blank=0,t=0,p;
     int mode;
     int p1,p2;
-    unsigned char ch[80];
+    char ch[80];
     cout<<"First search what you want to Change"<<endl;
     cout<<"Chose a search mode"<<endl<<"1.Phone number"<<endl<<"2.name"<<endl;
     do
     {
-        cin>>s_mode
+        cin>>s_mode;
+        getchar();
     }
-    while(s_mode<1 && s_mode2>2)
+    while(s_mode<1 && s_mode>2);
     p1=Search(Phonebook_name,Phonebook_num,n_name,n_num,s_mode);
     if(p1==-1)//寻找失败，导致无法继续进行更改
     {
@@ -305,7 +318,7 @@ void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
         for(;t<*n_name;t++)
         {
             p2=rand()%100;
-            if(!Phonebook_name[p].crash)
+            if(!Phonebook_name[p2].crash)
             {
                 t--;
                 continue;
@@ -317,25 +330,44 @@ void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
         cout<<"What's you want to change"<<endl<<"1.Phone Number"<<endl<<"2.name"<<endl<<"3.Phongnumber and name"<<endl;
         do
         {
-            cin>>mode
+            cin>>mode;
+            getchar();
         }
-        while(mode<1 && mode2>3)
+        while(mode<1 && mode>3);
         switch(mode)
         {
             case 3:
             case 2:
                 cout<<"Please input new name"<<endl;
-                unsigned char ch[80];
+                memset(ch,'\0',sizeof(ch));
                 cin>>ch;
+                getchar();
                 strcpy(New.name,ch);
+                strcpy(Phonebook_num[p1].name,New.name);
+                Phonebook_name[p2].crash=false;
+                blank=0;
+                for(int i=0;i<strlen(New.name);i++)
+                {
+                    blank+=New.name[i];
+                }
+                srand(blank);
+                do
+                {
+                    p=rand()%100;
+                }
+                while(Phonebook_name[p].crash==true);
+                Phonebook_name[p].crash=true;
+                strcpy(Phonebook_name[p].name,New.name);
+                strcpy(Phonebook_name[p].Number,New.Number);
                 if(mode==2)break;
             case 1:
                 cout<<"Please input new Phong number"<<endl;
-                unsigned char ch[80];
+                memset(ch,'\0',sizeof(ch));
                 while(1)
                 {
-                    bool error=FALSE;
+                    bool error=false;
                     cin.get(ch,80);
+                    getchar();
                     if(strlen(ch)!=0)
                     {
                         int length=strlen(ch);
@@ -349,12 +381,28 @@ void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
                             }
                         }
                         if(error)continue;
+                        else break;
                     }
                 }
-                strcpy(New.Number,ch);break;
+                strcpy(New.Number,ch);
+                Phonebook_num[p1].crash=false;
+                blank=0;
+                for(int i=0;i<strlen(New.Number);i++)
+                {
+                    blank+=New.Number[i];
+                }
+                srand(blank);
+                do
+                {
+                    p=rand()%100;
+                }
+                while(Phonebook_num[p].crash==true);
+                Phonebook_num[p].crash=true;
+                strcpy(Phonebook_num[p].name,New.name);
+                strcpy(Phonebook_num[p].Number,New.Number);
+                strcpy(Phonebook_name[p2].Number,New.Number);
+                break;
         }
-        Phonebook_name[p2]=New;
-        Phonebook_num[p1]=New;
     }
     else if(s_mode==2)//以名字搜索后，再以数字搜索其在数字表中的位置
     {
@@ -379,25 +427,44 @@ void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
         cout<<"What's you want to change"<<endl<<"1.Phone Number"<<endl<<"2.name"<<endl<<"3.Phongnumber and name"<<endl;
         do
         {
-            cin>>mode
+            cin>>mode;
+            getchar();
         }
-        while(mode<1 && mode2>3)
+        while(mode<1 && mode>3);
         switch(mode)
         {
             case 3:
             case 2:
                 cout<<"Please input new name"<<endl;
-                unsigned char ch[80];
+                memset(ch,'\0',sizeof(ch));
                 cin>>ch;
+                getchar();
                 strcpy(New.name,ch);
+                strcpy(Phonebook_num[p2].name,New.name);
+                Phonebook_name[p1].crash=false;
+                blank=0;
+                for(int i=0;i<strlen(New.name);i++)
+                {
+                    blank+=New.name[i];
+                }
+                srand(blank);
+                do
+                {
+                    p=rand()%100;
+                }
+                while(Phonebook_name[p].crash==true);
+                Phonebook_name[p].crash=true;
+                strcpy(Phonebook_name[p].name,New.name);
+                strcpy(Phonebook_name[p].Number,New.Number);
                 if(mode==2)break;
             case 1:
                 cout<<"Please input new Phong number"<<endl;
-                unsigned char ch[80];
+                char ch[80];
                 while(1)
                 {
-                    bool error=FALSE;
+                    bool error=false;
                     cin.get(ch,80);
+                    getchar();
                     if(strlen(ch)!=0)
                     {
                         int length=strlen(ch);
@@ -411,12 +478,28 @@ void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* 
                             }
                         }
                         if(error)continue;
+                        else break;
                     }
                 }
-                strcpy(New.Number,ch);break;
+                strcpy(New.Number,ch);
+                Phonebook_num[p2].crash=false;
+                blank=0;
+                for(int i=0;i<strlen(New.Number);i++)
+                {
+                    blank+=New.Number[i];
+                }
+                srand(blank);
+                do
+                {
+                    p=rand()%100;
+                }
+                while(Phonebook_num[p].crash==true);
+                Phonebook_num[p].crash=true;
+                strcpy(Phonebook_num[p].name,New.name);
+                strcpy(Phonebook_num[p].Number,New.Number);
+                strcpy(Phonebook_name[p1].Number,New.Number);
+                break;
         }
-        Phonebook_num[p2]=New;
-        Phonebook_name[p1]=New;
     }
     
 }

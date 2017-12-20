@@ -5,3 +5,4 @@ SFML-build/
 *.rar
 *.out
 hufzip.cpp
+test.cpp
