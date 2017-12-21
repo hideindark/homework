@@ -9,7 +9,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Phonebook.exe",
+            "program": "${workspaceFolder}/Huffmanzip.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

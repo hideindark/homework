@@ -181,7 +181,7 @@ int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n
                 t--;
                 continue;
             }
-            else if(!strcmp(ch,Phonebook_num[p].Number))
+            else if(!strcmp(ch,Phonebook_num[p].Number) && Phonebook_num[p].crash==true )
             {
                 cout<<"Name:"<<Phonebook_num[p].Number<<endl<<"Number:"<<Phonebook_num[p].name<<endl;
                 return p;

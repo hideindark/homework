@@ -6,3 +6,4 @@ SFML-build/
 *.out
 hufzip.cpp
 test.cpp
+test.txt
