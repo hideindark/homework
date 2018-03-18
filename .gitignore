@@ -1,10 +1,10 @@
+test.cpp
+hufzip.cpp
+test.txt
+test1.txt
 SFML/
 SFML-build/
 *.exe
 *.zip
 *.rar
 *.out
-hufzip.cpp
-test.cpp
-test.txt
-test1.txt
