@@ -5,6 +5,7 @@
 #include<queue>
 #include<stack>
 #include<functional>
+//目前这个还有bug，修不修就看心情了orz
 using namespace std;
 struct code
 {
@@ -73,6 +74,7 @@ int main()
                 huf* top=new huf;
                 HuffmanTree(s,top);
                 encodefile(filename,s);
+                s.clear();
                 break;
             }
             case 2:
@@ -95,7 +97,7 @@ bool FileRead(char* filename,vector<code> &s)
 {
     FILE *fp;
     unsigned char ch=0;
-    fp=fopen(filename,"rb");
+    fp=fopen(filename,"rb+");
     if(fp==NULL)return false;
     while(!feof(fp))
     {
@@ -119,11 +121,10 @@ bool FileRead(char* filename,vector<code> &s)
     fclose(fp);
     return true;
 }
-huf* HuffmanTree(vector<code> &s,huf* top)
+huf* HuffmanTree(vector<code> &s,huf* top)//建立huffman树并产生相应编码
 {
     //创建huffman树
     huf *t1,*t2,*temp;
-    top->f=NULL;
     priority_queue<huf*, vector<huf*>, cmp1> r;
     for(int i=0;i<s.size();i++)
     {
@@ -133,143 +134,105 @@ huf* HuffmanTree(vector<code> &s,huf* top)
         temp->j=true;
         r.push(temp);
     }
+    temp=new huf;
     while(1)
     {
         t1=r.top();
         r.pop();
         t2=r.top();
         r.pop();
-        top->lchild=t1;
-        top->rchild=t2;
-        t1->f=top;
-        t2->f=top;
-        top->time=t1->time + t2->time;
+        temp->lchild=t1;
+        temp->rchild=t2;
+        t1->f=temp;
+        t2->f=temp;
+        temp->time=t1->time + t2->time;
         if(r.empty())break;
-        r.push(top);
-        top=new huf;
+        r.push(temp);
+        temp=new huf;
     }
+    top=temp;
     //从huffman树中产生相应编码
     stack<int> l;
-    for(int i=0;i>s.size();i++)
+    for(int i=0;i<s.size();i++)
     {
         bool find1=false;
         temp=Find(s[i].data,top);
         while(temp!=top)
         {
-            if(temp=temp->f->lchild)l.push(0);
+            if(temp==temp->f->lchild)l.push(0);
             else l.push(1);
             temp=temp->f;
         }
-        while(l.empty())
+        while(!l.empty())
         {
             s[i].hufcode.push_back(l.top());
             l.pop();
         }
     }
     return top;
-    
 }
 huf* Find(unsigned char key,huf* top)
 {
     stack<huf*> s;
-    s.push(top);
-    while(!s.empty())
+    huf *temp=top;
+    int time=0;
+    while(!s.empty() || temp!=NULL)
     {
-        huf *temp=s.top();
-        if(temp->data==key)return temp;
-        if(temp->lchild!=NULL)s.push(temp->lchild);
-        if(temp->rchild!=NULL)s.push(temp->rchild);
+       while(temp!=NULL)
+       {
+           if(temp->data==key)return temp;
+           s.push(temp);
+           temp=temp->lchild;
+       }
+       if(!s.empty())
+       {
+           temp=s.top();
+           s.pop();
+           if(temp->data==key)return temp;
+           temp=temp->rchild;
+       }
     }
 }
 void encodefile(char* filename,vector<code> &s)
 {
     char ch[100];
     unsigned char te,wr=0,temp;
-    int length=0,left=0,over=0;
+    int length=0,left=0,over=0,size;
     int i,j,k;
     sprintf(ch,"%s.out",filename);
     FILE *rf,*wf;
-    wf=fopen(ch,"wb");
-    rf=fopen(filename,"rb");
+    wf=fopen(ch,"wb+");
+    rf=fopen(filename,"rb+");
     //先往文件内写入编码信息
     temp=s.size();
     fputc(temp,wf);
     for(int i=0;i<s.size();i++)
     {
-        fputc((unsigned char)s[i].data,wf);
-        fputc((unsigned char)i,wf);
+        fwrite(&s[i].data,sizeof(unsigned char),1,wf);
+        fwrite(&s[i].time,sizeof(int),1,wf);
     }
     //对文件进行编码
     while(!feof(rf))
     {
-        te=fgetc(rf);
-        for(i=0;i<s.size();i++)
+        temp=fgetc(rf);
+        for(int i=0;i<s.size();i++)
         {
-            if(te==s[i].data)
+            if(temp==s[i].data)
             {
-                if(length==0)
+                size=s[i].hufcode.size();
+                for(int j=0;j<size;j++)
                 {
-                    if(s[i].hufcode.size()<8)
+                    if(length!=8)
                     {
-                        length=s[i].hufcode.size();
-                        for(int j=0;j<s[i].hufcode.size();k++)
-                        {
-                            if(s[i].hufcode[j]==0)wr*=2;
-                            else wr=wr*2+1;
-                        }
-                        left=8-length;
+                        if(s[i].hufcode[j]==0)wr*=2;
+                        else wr=wr*2+1;
+                        length++;
                     }
-                    else
+                    else 
                     {
-                        length=s[i].hufcode.size()%8;
-                        left=8-length;
-                        for(j=0;j<s[i].hufcode.size()/8;j++)
-                        {
-                            for(int k=0;k<8;k++)
-                            {
-                                if(s[i].hufcode[k+j*8]==0)wr*=2;
-                                else wr=wr*2+1;
-                            }
-                            fputc(wr,wf);
-                            wr=0;
-                        }
-                        if(length==0)break;
-                        else 
-                        {
-                            for(j=s[i].hufcode.size()-length;j<s[i].hufcode.size();j++)
-                            {
-                                if(s[i].hufcode[k+j*8]==0)wr*=2;
-                                else wr=wr*2+1;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if(s[i].hufcode.size()+length<8)
-                    {
-                        for(j=0;j<s[i].hufcode.size();j++)
-                        {
-                            if(s[i].hufcode[j]==0)wr*=2;
-                            else wr=wr*2+1;
-                        }
-                        length+=s[i].hufcode.size();
-                    }
-                    else if(s[i].hufcode.size()+length>=8)
-                    {
-                        for(j=0;j<s[i].hufcode.size();j++)
-                        {
-                            if(s[i].hufcode[j]==0)wr*=2;
-                            else wr=wr*2+1;
-                            length++;
-                            if(length==8)
-                            {
-                                fputc(wr,wf);
-                                wr=0;
-                                length=0;
-                            }
-                        }
+                        fputc(wr,wf);
+                        length=0;
+                        wr=0;
                     }
                 }
             }
@@ -278,41 +241,37 @@ void encodefile(char* filename,vector<code> &s)
     if(length!=0)fputc(wr<<8-length,wf);
     fclose(rf);
     fclose(wf);
-    /*
-    cout<<s.size();
-    for(int i=0;i<s.size();i++)
-    {
-        cout<<s[i].data<<" "<<s[i].time<<endl;
-    }
-    */
 }
 void decodefile(char* filename,vector<code> &s)
 {
     FILE *rfile,*wfile;
     code temp;
     char ch[100];
+    unsigned char p;
     sprintf(ch,"%s.out",filename);
     rfile=fopen(filename,"rb");
     wfile=fopen(ch,"wb");
     int num=fgetc(rfile);
     for(int i=0;i<num;i++)
     {
-        temp.data=fgetc(rfile);
-        temp.time=fgetc(rfile);
+        fread(&temp.data,sizeof(unsigned char),1,rfile);
+        fread(&temp.time,sizeof(int),1,rfile);
         s.push_back(temp);
     }
     huf* top=new huf;
+    top=HuffmanTree(s,top);
     huf* mem=top;
-    HuffmanTree(s,top);
     while(!feof(rfile))
     {
         unsigned char ch=fgetc(rfile);
         for(int i=7;i>=0;i--)
         {
-            ch<<7-i;
-            ch>>i;
-            if(ch==0)mem=mem->lchild;
-            else mem=mem->rchild;
+            p=ch<<7-i;
+            p=p>>7;
+            if(p==0)
+            mem=mem->lchild;
+            else if(p==1)
+            mem=mem->rchild;
             if(mem->j==true)
             {
                 fputc(mem->data,wfile);

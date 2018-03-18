@@ -14,10 +14,10 @@ struct Phone{
     }
 };
 int Start(int *mode);
-void Insert(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);
-void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);
-void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);
-int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num,int mode);
+void Insert(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);//通过哈希算法进行插入，并进行检查
+void Delete(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);//借由寻找函数的办法找到两个表中对应的位置，并将crash置为false
+void Change(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num);//通过寻找函数的办法找到对应位置并进行修改，将修改后的数据重新进行哈希到对应位置
+int Search(Phone Phonebook_name[100],Phone Phonebook_num[100],int* n_name,int* n_num,int mode);//可以通过号码和姓名进行查找
 int main()
 {
     Phone Phonebook_name[100],Phonebook_num[100];
