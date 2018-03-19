@@ -8,3 +8,4 @@ SFML-build/
 *.zip
 *.rar
 *.out
+.vscode/

@@ -10,9 +10,9 @@
             "args": [
                 // Ask msbuild to generate full paths for file names.
                 "-g",
-                "Huffmancode\\Huffman.cpp",
+                "算法作业/作业1/example.cpp",
                 "-o",
-                "Huffmanzip.exe"
+                "example.exe"
             ],
             "group": {
                 "kind":"build",
