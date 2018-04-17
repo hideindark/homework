@@ -1,0 +1,1 @@
+cut -d " " -f 1- test1.cpp --output-delimiter="_" >>output.txt
