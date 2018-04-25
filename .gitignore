@@ -7,8 +7,11 @@ SFML-build/
 build-tetris-Desktop_Qt_5_10_1_MinGW_32bit-Debug/
 build-tetris-Desktop_Qt_5_10_1_MinGW_32bit-Release/
 tetris-master/
+face/
 *.exe
 *.zip
 *.rar
 *.out
 .vscode/
+*.pgm
+test*
