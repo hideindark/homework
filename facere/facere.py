@@ -17,7 +17,7 @@ def imageload(k):
             filename='orl_faces/s' + str(i+1)+'/'  + str(choose[j]) +'.pgm'
             img = cv2.imread(filename,0)
             #img = cv2.resize(img,(40,120),interpolation=cv2.INTER_AREA)
-            #img=lbp(img)#lbp算法加上pca之后会导致识别效果变差，怀疑是算法之间的干扰造成的问题
+            img=lbp(img)#lbp算法加上pca之后会导致识别效果变差，怀疑是算法之间的干扰造成的问题
             adjustface=img.flatten()
             Dir = 'testface/'+str(i*10+j)+'.jpg'
             #cv2.imwrite(Dir,img)
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     distance = np.zeros(40*7)
     success_num =0;
     '''
-    for i in xrange(num_test):#此时两个矩阵都处在同一坐标系统，由此求该图片到各个图片的距离，并找出其中距离最近的一张
+    for i in xrange(num_test):#此时两个矩阵都处在同一坐标系统，由此求测试图片到各个训练图片的距离，并找出其中距离最近的一张作为识别结果
         test_face = data_test_change[i,:]
         diffmat = train_data - np.tile(test_face,(num_train,1))
         distances = np.sum(diffmat**2,axis=1)
