@@ -17,7 +17,7 @@ def imageload(k):
             filename='orl_faces/s' + str(i+1)+'/'  + str(choose[j]) +'.pgm'
             img = cv2.imread(filename,0)
             #img = cv2.resize(img,(40,120),interpolation=cv2.INTER_AREA)
-            img=lbp(img)#lbp算法加上pca之后会导致识别效果变差，怀疑是算法之间的干扰造成的问题
+            #img=lbp(img)#lbp算法加上pca之后会导致识别效果变差，应该是两者之间有冲突造成了干扰
             adjustface=img.flatten()
             Dir = 'testface/'+str(i*10+j)+'.jpg'
             #cv2.imwrite(Dir,img)
@@ -68,7 +68,7 @@ def pca(data,k):
     x=data - np.tile(data_mean,(rows,1))
     C=x*x.T
     D,V=np.linalg.eig(C)#求特征值D和特征向量V
-    W=V[:,0:k]#取前20个特征向量
+    W=V[:,0:k]#取前k个特征向量
     W=x.T*W
     for i in xrange(k): #特征向量归一化
         L=np.linalg.norm(W[:,i])
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         if train_face_number[position] == test_face_number [i] :
             success_num +=1
     '''
-    for i in xrange(num_test):
+    for i in xrange(num_test):#利用最小二乘法得到训练人像到测试人像的表示系数，并算出距离
         test_face=data_test_change[i,:].T
         result = np.dot(np.dot(np.linalg.inv(np.dot(train_data,train_data.T)),train_data),test_face)
         for j in xrange(40*7):
