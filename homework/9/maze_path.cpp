@@ -6,6 +6,7 @@
 #include<cstdio>
 #include<windows.h>
 using namespace std;
+//直接取自上学期的迷宫作业，小bug就不修了
 struct position
 {
     int r,c;
@@ -132,7 +133,6 @@ int main()
         {
             if(maze[r][c][2]==1)
             {
-                
                 temp.r--;
                 if(check_move(openlist,closelist,temp))
                 {
@@ -216,7 +216,7 @@ int main()
             i=0;
         }
     }
-    //绘制迷宫与路线
+    //绘制迷宫与路线，0为路线，空格为通路，#为墙
     for(int i=0;i<rowmax;i++)
     for(int k=0;k<3;k++)
     {
@@ -252,7 +252,7 @@ int main()
     }
 
 }
-bool check_move(vector<point> openlist,vector<point> closelist,point temp)//用于在BFS处判断该点是否已经被判断了
+bool check_move(vector<point> openlist,vector<point> closelist,point temp)//用于在BFS处判断该点是否已经被检查了
 {
     if(!openlist.empty())
     {

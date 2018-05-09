@@ -10,9 +10,9 @@
             "args": [
                 // Ask msbuild to generate full paths for file names.
                 "-g",
-                "算法作业/作业1/example.cpp",
+                "homework/7/BFS.cpp",
                 "-o",
-                "example.exe"
+                "BFS.exe"
             ],
             "group": {
                 "kind":"build",
