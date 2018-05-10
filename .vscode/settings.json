@@ -1,6 +1,8 @@
 {
     "files.associations": {
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "iostream": "cpp",
+        "typeinfo": "cpp"
     },
     "python.pythonPath": "C:\\Python27\\python.exe"
 }

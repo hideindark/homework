@@ -8,6 +8,7 @@ class queue
     int pop();
     bool push(int p);
     void top();
+    bool empty();
     queue();//队列初始化
     ~queue();
     private:
@@ -57,6 +58,11 @@ void queue::top()
     if(num>0)cout<<queue_int[0]<<endl;
     else cout<<"queue is empty";
     return ;
+}
+bool queue::empty()
+{
+    if(num)return true;
+    else return false;
 }
 int main()
 {
