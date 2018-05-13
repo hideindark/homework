@@ -20,6 +20,7 @@ class manage//会员卡的功能和数据定义
     int Find();//查询
     void change();//修改
     void hash(int total,card newcard);//哈希插入
+    void list();//列出所有的数据
     manage();
     private:
     vector<card> cards;
@@ -117,4 +118,14 @@ void manage::hash(int total,card newcard)
     }while(cards[p].use);
     cards[p]=newcard;
     return ;
+}
+void manage::list()
+{
+    for(int i=0;i<300;i++)
+    if(cards[i].use)
+    {
+        cout<<"name:"<<cards[i].name<<endl;
+        cout<<"level:"<<cards[i].level<<endl;
+        cout<<"integral:"<<cards[i].score<<"pts"<<endl;
+    }
 }

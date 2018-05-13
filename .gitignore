@@ -12,6 +12,7 @@ face/
 *.zip
 *.rar
 *.out
+*.pdf
 .vscode/
 *.pgm
 test*
