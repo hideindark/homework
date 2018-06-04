@@ -82,7 +82,7 @@ void manage::change()
             for(int i=0;i<strlen(name);i++)temp.name[i]=name[i];break;
             case 3:
             int level;
-            cout<<"input new level";
+            cout<<"input new level:";
             do cin>>level;
             while(level<1 || level>3);
             temp.level=level;break;

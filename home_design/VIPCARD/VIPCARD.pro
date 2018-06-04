@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-05-10T15:30:25
+# Project created by QtCreator 2018-05-27T21:18:28
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = VIPCARD
+TARGET = vipcard
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
